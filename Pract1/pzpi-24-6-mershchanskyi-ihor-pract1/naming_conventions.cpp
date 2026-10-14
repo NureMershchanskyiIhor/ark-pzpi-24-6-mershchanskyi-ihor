@@ -1,5 +1,10 @@
 #include <string>
 
+enum Statuses {
+    Ok = 1,
+    Error = 2
+};
+
 class UserAccount {
 public:
     static constexpr int MAX_LOGIN_ATTEMPTS = 3;
