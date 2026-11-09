@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Динамічна схема патерну Фабричний метод</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-light: #eff6ff;
+            --accent-color: #10b981;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #cbd5e1;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --hover-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.15), 0 8px 10px -6px rgba(59, 130, 246, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--bg-color);
+            font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: var(--text-main);
+            text-align: center;
+            font-size: 1.6rem;
+        }
+
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .schema-container {
+            position: relative;
+            max-width: 700px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 50px;
+            padding: 20px 0;
+        }
+
+        #connections-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .box {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 700;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            z-index: 2;
+            min-width: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .box:hover {
+            border-color: var(--primary-color);
+            box-shadow: var(--hover-shadow);
+            transform: translateY(-3px);
+        }
+
+        .box.highlight {
+            border-color: var(--accent-color);
+            background-color: #f0fdf4;
+        }
+
+        .abstract {
+            background: var(--primary-light);
+            border-color: var(--primary-color);
+            color: #1d4ed8;
+        }
+
+        .sub-text {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .factories-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0 20px;
+            box-sizing: border-box;
+            z-index: 2;
+        }
+
+        .factory-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 35px;
+        }
+
+        #info-panel {
+            margin-top: 30px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>СХЕМА ПАТЕРНУ "ФАБРИЧНИЙ МЕТОД"</h2>
+    <div class="subtitle">Наведіть курсор або клікніть на блок, щоб дослідити зв'язки</div>
+
+    <div class="schema-container" id="schema">
+        <svg id="connections-svg">
+            <defs>
+                <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"></path>
+                </marker>
+                <marker id="arrow-active" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981"></path>
+                </marker>
+            </defs>
+        </svg>
+
+        <div class="box abstract" id="creator" data-info="Абстрактний клас Творця оголошує фабричний метод, який повинен повертати об'єкти класу Продукт.">
+            ТВОРЕЦЬ
+            <div class="sub-text">(абстрактний клас)</div>
+        </div>
+
+        <div class="factories-row">
+            <div class="factory-group">
+                <div class="box factory" id="factory-a" data-target="product-a" data-info="Фабрика А перевизначає фабричний метод для створення Продукту А.">
+                    🏭 Фабрика А
+                </div>
+                <div class="box product" id="product-a" data-info="Конкретний Продукт А, реалізує інтерфейс Продукту.">
+                    ⚙️ Продукт А
+                </div>
+            </div>
+
+            <div class="factory-group">
+                <div class="box factory" id="factory-b" data-target="product-b" data-info="Фабрика Б перевизначає фабричний метод для створення Продукту Б.">
+                    🏭 Фабрика Б
+                </div>
+                <div class="box product" id="product-b" data-info="Конкретний Продукт Б, реалізує інтерфейс Продукту.">
+                    📦 Продукт Б
+                </div>
+            </div>
+        </div>
+
+        <div class="box abstract" id="product-base" data-info="Інтерфейс Продукту визначає спільний інтерфейс для всіх об'єктів, які може створювати творець та його підкласи.">
+            ПРОДУКТ
+            <div class="sub-text">(абстрактний / інтерфейс)</div>
+        </div>
+    </div>
+
+    <div id="info-panel">💡 Наведіть курсор на будь-який елемент схеми для детальної інформації.</div>
+
+    <script>
+        function drawConnections() {
+            const svg = document.getElementById('connections-svg');
+            const container = document.getElementById('schema').getBoundingClientRect();
+            
+            const oldLines = svg.querySelectorAll('path, line');
+            oldLines.forEach(l => l.remove());
+
+            const creator = document.getElementById('creator').getBoundingClientRect();
+            const factoryA = document.getElementById('factory-a').getBoundingClientRect();
+            const factoryB = document.getElementById('factory-b').getBoundingClientRect();
+            const productA = document.getElementById('product-a').getBoundingClientRect();
+            const productB = document.getElementById('product-b').getBoundingClientRect();
+            const productBase = document.getElementById('product-base').getBoundingClientRect();
+
+            function createPath(x1, y1, x2, y2, isActive = false, isDashed = false) {
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const dx = Math.abs(x2 - x1) * 0.5;
+                // Плавна крива Безьє для з'єднань
+                const d = `M ${x1} ${y1} C ${x1} ${y1 + dx}, ${x2} ${y2 - dx}, ${x2} ${y2}`;
+                path.setAttribute('d', d);
+                path.setAttribute('fill', 'none');
+                path.setAttribute('stroke', isActive ? '#10b981' : '#64748b');
+                path.setAttribute('stroke-width', isActive ? '3' : '2');
+                if (isDashed) path.setAttribute('stroke-dasharray', '5,5');
+                path.setAttribute('marker-end', isActive ? 'url(#arrow-active)' : 'url(#arrow)');
+                svg.appendChild(path);
+            }
+
+            const relX = (rect) => rect.left + rect.width / 2 - container.left;
+            const creatorBottom = creator.bottom - container.top;
+            const creatorTop = creator.top - container.top;
+            const creatorCenterX = relX(creator);
+
+            const fA_Top = factoryA.top - container.top;
+            const fA_Bottom = factoryA.bottom - container.top;
+            const fA_X = relX(factoryA);
+
+            const fB_Top = factoryB.top - container.top;
+            const fB_Bottom = factoryB.bottom - container.top;
+            const fB_X = relX(factoryB);
+
+            const pA_Top = productA.top - container.top;
+            const pA_X = relX(productA);
+
+            const pB_Top = productB.top - container.top;
+            const pB_X = relX(productB);
+
+            const baseTop = productBase.top - container.top;
+            const baseCenterX = relX(productBase);
+
+            const midY = creatorBottom + 15;
+            createStraightLine(creatorCenterX, creatorBottom, creatorCenterX, midY);
+            createStraightLine(fA_X, midY, fB_X, midY);
+            createStraightLine(fA_X, midY, fA_X, fA_Top);
+            createStraightLine(fB_X, midY, fB_X, fB_Top);
+
+            createDashedLine(fA_X, fA_Bottom, pA_X, pA_Top);
+            createDashedLine(fB_X, fB_Bottom, pB_X, pB_Top);
+
+            const pMidY = pA_Top + productA.height + 15;
+            createStraightLine(pA_X, productA.bottom - container.top, pA_X, pMidY);
+            createStraightLine(pB_X, productB.bottom - container.top, pB_X, pMidY);
+            createStraightLine(pA_X, pMidY, pB_X, pMidY);
+            createStraightLine(baseCenterX, pMidY, baseCenterX, baseTop);
+        }
+
+        function createStraightLine(x1, y1, x2, y2) {
+            const svg = document.getElementById('connections-svg');
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+            line.setAttribute('stroke', '#64748b');
+            line.setAttribute('stroke-width', '2');
+            svg.appendChild(line);
+        }
+
+        function createDashedLine(x1, y1, x2, y2) {
+            const svg = document.getElementById('connections-svg');
+            const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+            line.setAttribute('x1', x1); line.setAttribute('y1', y1);
+            line.setAttribute('x2', x2); line.setAttribute('y2', y2);
+            line.setAttribute('stroke', '#3b82f6');
+            line.setAttribute('stroke-width', '2');
+            line.setAttribute('stroke-dasharray', '6,4');
+            line.setAttribute('marker-end', 'url(#arrow)');
+            svg.appendChild(line);
+        }
+
+        const boxes = document.querySelectorAll('.box');
+        const infoPanel = document.getElementById('info-panel');
+
+        boxes.forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                infoPanel.textContent = box.getAttribute('data-info');
+                box.classList.add('highlight');
+                
+                const targetId = box.getAttribute('data-target');
+                if (targetId) {
+                    document.getElementById(targetId).classList.add('highlight');
+                }
+            });
+
+            box.addEventListener('mouseleave', () => {
+                infoPanel.textContent = '💡 Наведіть курсор на будь-який елемент схеми для детальної інформації.';
+                boxes.forEach(b => b.classList.remove('highlight'));
+            });
+        });
+
+        window.addEventListener('load', drawConnections);
+        window.addEventListener('resize', drawConnections);
+    </script>
+</body>
+</html>
